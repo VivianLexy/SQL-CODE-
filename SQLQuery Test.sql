@@ -232,6 +232,73 @@ RIGHT OUTER JOIN [SQL Tutorial].dbo.EmployeeSalary
  INNER JOIN [SQL Tutorial].dbo.EmployeeSalary 
  ON EmployeeDemographics.EmployeeID = EmployeeSalary.EmployeeID
 
+--GROUP BY STATEMENTS 
+SELECT *
+FROM employee_demographics
+
+--Group by gender
+SELECT gender
+FROM employee_demographics
+GROUP BY gender 
+;
+
+--Aggregate function with Gender 
+SELECT gender, AVG(age)
+FROM employee_demographics
+GROUP BY gender
+;
+
+--Group from the salary table based on occupation and salary 
+SELECT occupation, salary 
+FROM employee_salary
+GROUP BY occupation, salary
+;
+
+--The highest and lowest  age in both genders and count of genders 
+SELECT gender, AVG(age), MAX(age), MIN(age), COUNT(age)
+FROM employee_demographics
+GROUP BY gender
+;
+
+--ORDER BY STATEMENTS
+--Order by firstname(This will order the names in ASC order from A-Z)
+SELECT *
+FROM employee_demographics
+ORDER BY first_name
+
+--Order by firstname in descending order 
+SELECT *
+FROM employee_demographics
+ORDER BY first_name DESC;
+
+--Order by gender and age 
+SELECT *
+FROM employee_demographics
+ORDER BY gender, age 
+;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
