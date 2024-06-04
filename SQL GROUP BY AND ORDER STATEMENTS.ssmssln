@@ -1,19 +1,69 @@
+--GROUP BY STATEMENTS 
+
+SELECT *
+FROM employee_demographics
+
+--Group by gender
+SELECT gender
+FROM employee_demographics
+GROUP BY gender 
+;
+
+--Aggregate function with Gender 
+SELECT gender, AVG(age)
+FROM employee_demographics
+GROUP BY gender
+;
+
+--Group from the salary table based on occupation and salary 
+SELECT occupation, salary 
+FROM employee_salary
+GROUP BY occupation, salary
+;
+
+--The highest and lowest  age in both genders and count of genders 
+SELECT gender, AVG(age), MAX(age), MIN(age), COUNT(age)
+FROM employee_demographics
+GROUP BY gender
+;
+
+--ORDER BY 
+--Order by firstname(This will order the names in ASC order from A-Z)
+SELECT *
+FROM employee_demographics
+ORDER BY first_name
+
+--Order by firstname in descending order 
+SELECT *
+FROM employee_demographics
+ORDER BY first_name DESC;
+
+--Order by gender and age 
+SELECT *
+FROM employee_demographics
+ORDER BY gender, age 
+;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# SQL Server Management Studio Solution File, Format Version 20.00
-VisualStudioVersion = 15.0.28307.421
-MinimumVisualStudioVersion = 10.0.40219.1
-Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Default|Default = Default|Default
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{95C7D710-B990-44F1-B9AE-10B91CEDC686}.Default|Default.ActiveCfg = Default
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {826B99E0-303A-4670-A16C-1B409F1CE863}
-	EndGlobalSection
-EndGlobal
