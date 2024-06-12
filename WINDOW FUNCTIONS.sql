@@ -1,67 +1,111 @@
 
---WINDOW FUNCTIONS 
---The query  analyzes the average salary differences between male and female employees by joining the
---employee_demographics and employee_salary tables on the employee_id column and grouping the results by gender.
-SELECT gender, AVG(salary) AS Avg_salary
-FROM employee_demographics dem
-JOIN employee_salary sal 
-     ON dem.employee_id = sal.employee_id
-GROUP BY gender; 
 
---This function calculates the average salary for each gender group without grouping the entire result set. 
---It provides a way to include aggregated information alongside individual rows in the result set.
-SELECT gender, AVG(salary) OVER (PARTITION BY gender) AS Avg_salary
+--(COMMON TABLE EXPRESSION)CTEs 
+--Temporary named result set created from a simple select statement 
+
+WITH CTE_Example AS 
+(
+    SELECT 
+        gender, 
+        AVG(salary) AS avg_sal, 
+        MAX(salary) AS max_sal, 
+        MIN(salary) AS min_sal, 
+        COUNT(salary) AS salary_count
+    FROM 
+        employee_demographics dem 
+    JOIN 
+        employee_salary sal ON dem.employee_id = sal.employee_id
+    GROUP BY 
+        gender
+)
+SELECT 
+    gender, 
+    avg_sal, 
+    max_sal, 
+    min_sal, 
+    salary_count
+FROM 
+    CTE_Example;
+;
+
+SELECT AVG(avg_sal)
+FROM (SELECT gender, AVG(salary) avg_sal, MAX(salary) max_sal, MIN(salary)min_sal, COUNT(salary) salary_count
 FROM employee_demographics dem 
 JOIN employee_salary sal 
-   ON dem.employee_id = sal.employee_id;
+    ON dem.employee_id = sal.employee_id
+GROUP BY gender
+) example_subquery
+;
 
---Average salary partitioned by average 
-SELECT dem.first_name, dem.last_name, gender, AVG(salary) OVER (PARTITION BY gender) AS Avg_salary
-FROM employee_demographics dem 
-JOIN employee_salary sal 
-   ON dem.employee_id = sal.employee_id;
-
---Sum salary partitioned by gender 
-SELECT dem.first_name, dem.last_name, gender, SUM(salary) OVER (PARTITION BY gender) AS Avg_salary
-FROM employee_demographics dem 
-JOIN employee_salary sal 
-   ON dem.employee_id = sal.employee_id;
-
---The query calculates the rolling total salary for each employee, partitioned by gender and ordered by employee_id. 
-SELECT dem.first_name, dem.last_name, gender,salary, 
-SUM(salary) OVER (PARTITION BY gender ORDER BY dem.employee_id) AS Rolling_Total
-FROM employee_demographics dem 
-JOIN employee_salary sal 
-   ON dem.employee_id = sal.employee_id;
+WITH CTE_Example AS 
+(
+SELECT employee_id, gender,birth_date
+FROM employee_demographics
+WHERE birth_date > '1985-01-01'
+),
+CTE_Example2 AS 
+(
+SELECT employee_id, salary
+FROM employee_salary
+WHERE salary > 50000
+)
+SELECT*
+FROM CTE_Example
+JOIN CTE_Example2
+   ON CTE_Example.employee_id = CTE_Example2.employee_id;
 
 
---The query joins the employee_demographics and employee_salary tables on the employee_id column and 
---retrieves the first name, last name, gender, salary, and a row number for each employee. 
---The row numbers are assigned based on the order of the employee_id.
---Assigns a unique sequential integer to each row within the partition of gender, starting at 1.
---If two rows have the same salary, they will get different sequential numbers.
---Does not handle ties in salary the same way as RANK and DENSE_RANK
-SELECT dem.first_name, dem.last_name,gender, salary,
-ROW_NUMBER() OVER(ORDER BY dem.employee_id) AS row_num
-FROM employee_demographics dem 
-JOIN employee_salary sal  ON dem.employee_id = sal.employee_id;
+--TEMPORARY TABLES
+--CREATE TEMPORARY TABLE temp_table (
+  --  first_name VARCHAR(50),
+   -- last_name VARCHAR(50),
+   -- favorite_movie VARCHAR(100));
 
---Assigns two rows have the same salary, they receive the same rank, and the next rank is skipped.
---if two employees have the highest salary, both will receive rank 1, and the next rank assigned will be 3.
---Rank number assign same numbers( next number positionally)
-SELECT dem.employee_id, dem.first_name, dem.last_name,gender, salary,
-ROW_NUMBER() OVER(PARTITION BY gender ORDER BY salary DESC) AS row_num,
-RANK() OVER(PARTITION BY gender ORDER BY salary DESC) rank_num
-FROM employee_demographics dem 
-JOIN employee_salary sal  ON dem.employee_id = sal.employee_id;	
+CREATE TABLE #temp_table (
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    favorite_movie VARCHAR(100)
+);
 
---If two rows have the same salary, they receive the same rank, and the next rank continues sequentially without skipping any rank
-SELECT dem.employee_id, dem.first_name, dem.last_name,gender, salary,
-ROW_NUMBER() OVER(PARTITION BY gender ORDER BY salary DESC) AS row_num,
-RANK() OVER(PARTITION BY gender ORDER BY salary DESC) rank_num,
-DENSE_RANK() OVER(PARTITION BY gender ORDER BY salary DESC) dense_rank_num
-FROM employee_demographics dem 
-JOIN employee_salary sal  ON dem.employee_id = sal.employee_id;
+SELECT*
+FROM #temp_table;
+
+--Insert values into the #temptable 
+INSERT INTO #temp_table
+VALUES('Alex','Freberg','Lord of the Rings: The two Towers');
+
+SELECT *
+FROM #temp_table;
+
+SELECT *
+FROM employee_salary;
+
+CREATE TABLE #salary_over_50k
+
+SELECT *
+FROM employee_salary
+WHERE salary >= 50000;
+
+
+SELECT *
+FROM employee_salary;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
